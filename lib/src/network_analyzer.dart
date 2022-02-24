@@ -40,12 +40,12 @@ class NetworkAnalyzer {
         s.destroy();
         yield NetworkAddress(host, true);
       } catch (e) {
-        if (!(e is SocketException)) {
+        if (e is! SocketException) {
           rethrow;
         }
 
         // Check if connection timed out or we got one of predefined errors
-        if (e.osError == null || _errorCodes.contains(e.osError.errorCode)) {
+        if (e.osError == null || _errorCodes.contains(e.osError?.errorCode)) {
           yield NetworkAddress(host, false);
         } else {
           // Error 23,24: Too many open files in system
@@ -78,12 +78,12 @@ class NetworkAnalyzer {
         socket.destroy();
         out.sink.add(NetworkAddress(host, true));
       }).catchError((dynamic e) {
-        if (!(e is SocketException)) {
+        if (e is! SocketException) {
           throw e;
         }
 
         // Check if connection timed out or we got one of predefined errors
-        if (e.osError == null || _errorCodes.contains(e.osError.errorCode)) {
+        if (e.osError == null || _errorCodes.contains(e.osError?.errorCode)) {
           out.sink.add(NetworkAddress(host, false));
         } else {
           // Error 23,24: Too many open files in system
